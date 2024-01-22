@@ -48,7 +48,7 @@ start_datetime = datetime.now()
 # Format the date and time as a string
 report_start_time = start_datetime.strftime("%Y-%m-%d %H:%M:%S")
 
-# Update report table to add the monitoring end time
+# Insert the report and monitoring info into the report table of the sqlite db
 connection = sqlite3.connect('surefireinsights.db')
 cursor = connection.cursor()
 cursor.execute('''
