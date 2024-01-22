@@ -1,4 +1,3 @@
-import json
 import platform
 import cpuinfo
 import psutil
@@ -8,35 +7,7 @@ import uuid
 from datetime import datetime
 
 
-# computer_name = platform.node()
-# processors = platform.processor()
-# print(f"")
-# print(platform.machine())
-
-
-"""def getSystemInfo():
-    try:
-        info = {}
-        info['platform'] = platform.system()
-        info['platform-release'] = platform.release()
-        info['platform-version'] = platform.version()
-        info['architecture'] = platform.machine()
-        info['hostname'] = socket.gethostname()
-        info['ip-address'] = socket.gethostbyname(socket.gethostname())
-        info['mac-address'] = ':'.join(re.findall('..', '%012x' % uuid.getnode()))
-        info['processor'] = platform.processor()
-        info['Physical cores'] = psutil.cpu_count(logical=False)
-        info['Total cores'] = psutil.cpu_count(logical=True)
-        info['ram'] = str(round(psutil.virtual_memory().total / (1024.0 ** 2))) + " MB"
-        return json.dumps(info)
-    except Exception as e:
-        logging.exception(e)
-
-
-json_output = json.loads(getSystemInfo())
-print(json.dumps(json_output))"""
-
-def get_size(bytes, suffix="B"):
+def get_size(memorysize, suffix="B"):
     """
     Scale bytes to its proper format
     e.g:
@@ -45,12 +16,13 @@ def get_size(bytes, suffix="B"):
     """
     factor = 1024
     for unit in ["", "K", "M", "G", "T", "P"]:
-        if bytes < factor:
-            return f"{bytes:.2f}{unit}{suffix}"
-        bytes /= factor
+        if memorysize < factor:
+            return f"{memorysize:.2f}{unit}{suffix}"
+        memorysize /= factor
 
-def System_information():
-    print("="*40, "System Information", "="*40)
+
+def system_information():
+    print("=" * 40, "System Information", "=" * 40)
     uname = platform.uname()
     print(f"System: {uname.system}")
     print(f"Node Name: {uname.node}")
@@ -62,16 +34,14 @@ def System_information():
     print(f"Ip-Address: {socket.gethostbyname(socket.gethostname())}")
     print(f"Mac-Address: {':'.join(re.findall('..', '%012x' % uuid.getnode()))}")
 
-
     # Boot Time
-    print("="*40, "Boot Time", "="*40)
+    print("=" * 40, "Boot Time", "=" * 40)
     boot_time_timestamp = psutil.boot_time()
     bt = datetime.fromtimestamp(boot_time_timestamp)
     print(f"Boot Time: {bt.year}/{bt.month}/{bt.day} {bt.hour}:{bt.minute}:{bt.second}")
 
-
     # print CPU information
-    print("="*40, "CPU Info", "="*40)
+    print("=" * 40, "CPU Info", "=" * 40)
     # number of cores
     print("Physical cores:", psutil.cpu_count(logical=False))
     print("Total cores:", psutil.cpu_count(logical=True))
@@ -79,15 +49,14 @@ def System_information():
     cpufreq = psutil.cpu_freq()
     print(f"Max Frequency: {cpufreq.max:.2f}Mhz")
 
-
     # Memory Information
-    print("="*40, "Memory Information", "="*40)
+    print("=" * 40, "Memory Information", "=" * 40)
     # get the memory details
     svmem = psutil.virtual_memory()
     print(f"Total: {get_size(svmem.total)}")
 
     # Disk Information
-    print("="*40, "Disk Information", "="*40)
+    print("=" * 40, "Disk Information", "=" * 40)
     print("Partitions and Usage:")
     # get all disk partitions
     partitions = psutil.disk_partitions()
@@ -108,5 +77,4 @@ def System_information():
 
 
 if __name__ == "__main__":
-
-    System_information()
+    system_information()
