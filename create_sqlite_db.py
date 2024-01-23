@@ -15,14 +15,14 @@ cursor.execute('''
         monitoring_interval INTEGER,
         report_start_time TEXT,
         report_end_time TEXT,
-        run_hardware_specs TEXT,
+        run_system_specs TEXT,
         run_perfmon TEXT
     )
 ''')
 
 cursor.execute('''
-   CREATE TABLE IF NOT EXISTS hardware_specs (
-        hardware_specs_pk INTEGER PRIMARY KEY AUTOINCREMENT,
+   CREATE TABLE IF NOT EXISTS system_specs (
+        system_specs_pk INTEGER PRIMARY KEY AUTOINCREMENT,
         system_name TEXT,
         system_type TEXT,
         system_release_version_major INTEGER,
@@ -32,6 +32,12 @@ cursor.execute('''
         processor_spec TEXT,
         ip_address TEXT,
         mac_address TEXT,
+        last_boot_time TEXT,
+        physical_core_count INTEGER,
+        total_core_count INTEGER,
+        max_core_frequency TEXT,
+        total_memory TEXT,
+        disk_information TEXT,
         report_fk INTEGER,
         CONSTRAINT fk_report
             FOREIGN KEY (report_fk)
