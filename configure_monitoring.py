@@ -37,12 +37,16 @@ monitoring_interval_str = input("At what frequency would you like metric data to
 monitoring_interval = float(monitoring_interval_str)
 
 # Ask for the user if they want to run the system_specs function and store the value (0 or 1) in a variable
-run_system_specs_question = "Do you want to run the System Specificaton function?"
+run_system_specs_question = "Do you want to run the System Specification function?"
 run_system_specs = get_yes_no_input(run_system_specs_question)
 
-# Ask for the user if they want to run the perfmon function and store the value (0 or 1) in a variable
-run_perfmon_question = "Do you want to run the Performance Monitor function?"
-run_perfmon = get_yes_no_input(run_perfmon_question)
+# Ask for the user if they want to run the system_metrics function and store the value (0 or 1) in a variable
+run_system_metrics_question = "Do you want to run the System Metrics function?"
+run_system_metrics = get_yes_no_input(run_system_metrics_question)
+
+# Ask for the user if they want to run the process_metrics function and store the value (0 or 1) in a variable
+run_process_metrics_question = "Do you want to run the Process Metrics function?"
+run_process_metrics = get_yes_no_input(run_process_metrics_question)
 
 # Clear console screen
 clear_console()
@@ -51,16 +55,18 @@ clear_console()
 start_datetime = datetime.now()
 
 # Format the date and time as a string
-report_start_time = start_datetime.strftime("%Y-%m-%d %H:%M:%S")
+monitoring_start_time = start_datetime.strftime("%Y-%m-%d %H:%M:%S")
 
 # Insert the report and monitoring info into the report table of the sqlite db
 connection = sqlite3.connect('surefireinsights.db')
 cursor = connection.cursor()
 cursor.execute('''
     INSERT INTO report
-    (report_name, monitoring_duration, monitoring_interval, report_start_time, run_hardware_specs, run_perfmon)
-    VALUES (?, ?, ?, ?, ?, ?)
-''', (report_name, monitoring_duration, monitoring_interval, report_start_time, run_system_specs, run_perfmon))
+    (report_name, monitoring_duration, monitoring_interval, monitoring_start_time,
+    run_system_specs, run_system_metrics, run_process_metrics)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+''', (report_name, monitoring_duration, monitoring_interval, monitoring_start_time,
+      run_system_specs, run_system_metrics, run_process_metrics))
 connection.commit()
 connection.close()
 report_pk = cursor.lastrowid
@@ -71,9 +77,10 @@ print(f"Report Name: {report_name}")
 print(f"Monitoring Duration: {monitoring_duration}")
 print(f"Monitoring Interval: {monitoring_interval}")
 print(f"Run System Specs: {run_system_specs}")
-print(f"Run Performance Monitor: {run_perfmon}")
+print(f"Run System Metrics: {run_system_metrics}")
+print(f"Run Process Metrics: {run_process_metrics}")
 print(f"Report PK: {report_pk}")
-print(f"Monitoring is starting at: {report_start_time}")
+print(f"Monitoring is starting at: {monitoring_start_time}")
 
 # Run monitoring for duration defined
 time.sleep(monitoring_duration)
@@ -82,17 +89,17 @@ time.sleep(monitoring_duration)
 end_datetime = datetime.now()
 
 # Format the date and time as a string
-report_end_time = end_datetime.strftime("%Y-%m-%d %H:%M:%S")
+monitoring_end_time = end_datetime.strftime("%Y-%m-%d %H:%M:%S")
 
 # Update report table to add the monitoring end time
 connection = sqlite3.connect('surefireinsights.db')
 cursor = connection.cursor()
 cursor.execute('''
     UPDATE report
-    SET report_end_time = ?
+    SET monitoring_end_time = ?
     WHERE report_pk = ?
-''', (report_end_time, report_pk))
+''', (monitoring_end_time, report_pk))
 connection.commit()
 connection.close()
 
-print(f"Monitoring is ending at: {report_end_time}")
+print(f"Monitoring is ending at: {monitoring_end_time}")

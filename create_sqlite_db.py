@@ -13,10 +13,11 @@ cursor.execute('''
         report_name TEXT,
         monitoring_duration INTEGER,
         monitoring_interval INTEGER,
-        report_start_time TEXT,
-        report_end_time TEXT,
+        monitoring_start_time TEXT,
+        monitoring_end_time TEXT,
         run_system_specs TEXT,
-        run_perfmon TEXT
+        run_system_metrics TEXT,
+        run_process_metrics TEXT
     )
 ''')
 
