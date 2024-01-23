@@ -31,6 +31,7 @@ class SystemMetrics:
             'network_bytes_rec': psutil.net_io_counters().bytes_recv,
         }
 
+    # we should change these to insert into the SQLite DB
     @staticmethod
     def write_to_csv(metrics, csv_file):
         with open(csv_file, 'a', newline='') as csvfile:

@@ -37,6 +37,7 @@ class ProcessMetrics:
             }
         return processes_data
 
+    # we should change these to insert into the SQLite DB
     @staticmethod
     def write_to_csv(metrics, csv_file):
         with open(csv_file, 'a', newline='') as csvfile:
