@@ -24,8 +24,8 @@ def get_size(memorysize, suffix="B"):
 def system_information():
     print("=" * 40, "System Information", "=" * 40)
     uname = platform.uname()
-    print(f"System: {uname.system}")
     print(f"Node Name: {uname.node}")
+    print(f"System: {uname.system}")
     print(f"Release: {uname.release}")
     print(f"Version: {uname.version}")
     print(f"Machine: {uname.machine}")

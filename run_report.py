@@ -36,9 +36,9 @@ monitoring_interval_str = input("At what frequency would you like metric data to
                                 "in seconds, for this report? ")
 monitoring_interval = float(monitoring_interval_str)
 
-# Ask for the user if they want to run the hardware_stats function and store the value (0 or 1) in a variable
-run_hardware_stats_question = "Do you want to run the Hardware Stats function?"
-run_hardware_stats = get_yes_no_input(run_hardware_stats_question)
+# Ask for the user if they want to run the system_specs function and store the value (0 or 1) in a variable
+run_system_specs_question = "Do you want to run the System Specificaton function?"
+run_system_specs = get_yes_no_input(run_system_specs_question)
 
 # Ask for the user if they want to run the perfmon function and store the value (0 or 1) in a variable
 run_perfmon_question = "Do you want to run the Performance Monitor function?"
@@ -60,7 +60,7 @@ cursor.execute('''
     INSERT INTO report
     (report_name, monitoring_duration, monitoring_interval, report_start_time, run_hardware_specs, run_perfmon)
     VALUES (?, ?, ?, ?, ?, ?)
-''', (report_name, monitoring_duration, monitoring_interval, report_start_time, run_hardware_stats, run_perfmon))
+''', (report_name, monitoring_duration, monitoring_interval, report_start_time, run_system_specs, run_perfmon))
 connection.commit()
 connection.close()
 report_pk = cursor.lastrowid
@@ -70,7 +70,7 @@ print("Monitoring is due to start for the below configuration")
 print(f"Report Name: {report_name}")
 print(f"Monitoring Duration: {monitoring_duration}")
 print(f"Monitoring Interval: {monitoring_interval}")
-print(f"Run Hardware Stats: {run_hardware_stats}")
+print(f"Run System Specs: {run_system_specs}")
 print(f"Run Performance Monitor: {run_perfmon}")
 print(f"Report PK: {report_pk}")
 print(f"Monitoring is starting at: {report_start_time}")
