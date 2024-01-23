@@ -6,17 +6,17 @@
 """
 import time
 from concurrent.futures import ThreadPoolExecutor
-import system_metrics
+import process_metrics
 
 
-csv_file_path = 'C:/Users/corlessd/OneDrive - ESG/Python/surefireinsights/metrics.csv'
+csv_file_path = 'C:/Users/corlessd/OneDrive - ESG/Python/surefireinsights/process_metrics.csv'
 interval_seconds = 5
 
 try:
     # execute the collection with multiple threads to speed up the process.
-    with ThreadPoolExecutor(max_workers=2) as executor:
+    with ThreadPoolExecutor(max_workers=1) as executor:
         while True:
-            executor.submit(system_metrics.SystemMetrics.collect_and_write_system_metrics(csv_file_path))
+            executor.submit(process_metrics.ProcessMetrics.collect_and_write_process_metrics(csv_file_path))
             time.sleep(interval_seconds)
 # prints a new error message if you cancel the script.
 except KeyboardInterrupt:
