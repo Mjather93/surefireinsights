@@ -27,9 +27,14 @@ def clear_console():
 # Ask for the user to choose a report name and store the value in a variable
 report_name = input("What would you like to name this report? ")
 
-# Ask for the user to choose a report name and store the value in a variable
+# Ask for the user how long they want the monitoring to run for and store the value in a variable
 monitoring_duration_str = input("How long would you like monitoring to run for, in seconds, for this report? ")
 monitoring_duration = float(monitoring_duration_str)
+
+# Ask for the user to choose how frequently they want stats to be gathered and store the value in a variable
+monitoring_interval_str = input("At what frequency would you like metric data to be collected, "
+                                "in seconds, for this report? ")
+monitoring_interval = float(monitoring_interval_str)
 
 # Ask for the user if they want to run the hardware_stats function and store the value (0 or 1) in a variable
 run_hardware_stats_question = "Do you want to run the Hardware Stats function?"
@@ -52,9 +57,10 @@ report_start_time = start_datetime.strftime("%Y-%m-%d %H:%M:%S")
 connection = sqlite3.connect('surefireinsights.db')
 cursor = connection.cursor()
 cursor.execute('''
-    INSERT INTO report (report_name, monitoring_duration, report_start_time, run_hardware_specs, run_perfmon)
-    VALUES (?, ?, ?, ?, ?)
-''', (report_name, monitoring_duration, report_start_time, run_hardware_stats, run_perfmon))
+    INSERT INTO report
+    (report_name, monitoring_duration, monitoring_interval, report_start_time, run_hardware_specs, run_perfmon)
+    VALUES (?, ?, ?, ?, ?, ?)
+''', (report_name, monitoring_duration, monitoring_interval, report_start_time, run_hardware_stats, run_perfmon))
 connection.commit()
 connection.close()
 report_pk = cursor.lastrowid
@@ -63,6 +69,7 @@ report_pk = cursor.lastrowid
 print("Monitoring is due to start for the below configuration")
 print(f"Report Name: {report_name}")
 print(f"Monitoring Duration: {monitoring_duration}")
+print(f"Monitoring Interval: {monitoring_interval}")
 print(f"Run Hardware Stats: {run_hardware_stats}")
 print(f"Run Performance Monitor: {run_perfmon}")
 print(f"Report PK: {report_pk}")
