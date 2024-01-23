@@ -21,20 +21,30 @@ class ProcessMetrics:
         processes_data = {}
         process_metrics = psutil.process_iter()
         for processes in process_metrics:
-            # print(processes.name())
-            processes_data += {
+            processes_info = {
                 'timestamp': datetime.now(),
                 'process_id': processes.pid,
                 'process_name': processes.name(),
-                'command_line': processes.cmdline(),
                 'cpu_percent': processes.cpu_percent(interval=None),
                 'memory_percent': processes.memory_percent(),
-                'num_of_threads': processes.threads(),
                 'num_of_handles': processes.num_handles(),
-                'num_of_open_files': processes.open_files(),
                 'io_read_count': processes.io_counters().read_count,
                 'io_write_count': processes.io_counters().write_count
             }
+            try:
+                processes_info['command_line'] = processes.cmdline()
+            except Exception as e:
+                processes_info['command_line'] = ''
+            try:
+                processes_info['num_of_threads'] = processes.threads()
+            except Exception as e:
+                processes_info['num_of_threads'] = 0
+            try:
+                processes_info['num_of_open_files'] = processes.open_files()
+            except Exception as e:
+                processes_info['num_of_open_files'] = 0
+
+            processes_data[processes.pid] = processes_info
         return processes_data
 
     # we should change these to insert into the SQLite DB
