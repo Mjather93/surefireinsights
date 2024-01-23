@@ -40,12 +40,12 @@ cursor.execute('''
 ''')
 
 cursor.execute('''
-   CREATE TABLE IF NOT EXISTS process_metrics (
-        process_metrics_pk INTEGER PRIMARY KEY AUTOINCREMENT,
+   CREATE TABLE IF NOT EXISTS system_metrics (
+        system_metrics_pk INTEGER PRIMARY KEY AUTOINCREMENT,
         timestamp TEXT,
-        cpu_usage INTEGER,
-        memory_usage INTEGER,
-        disk_usage INTEGER,
+        cpu_percent INTEGER,
+        memory_percent INTEGER,
+        disk_percent INTEGER,
         network_bytes_sent INTEGER,
         network_bytes_received INTEGER,
         report_fk INTEGER,
@@ -56,14 +56,14 @@ cursor.execute('''
 ''')
 
 cursor.execute('''
-   CREATE TABLE IF NOT EXISTS hardware_metrics (
-        hardware_metrics_pk INTEGER PRIMARY KEY AUTOINCREMENT,
+   CREATE TABLE IF NOT EXISTS process_metrics (
+        process_metrics_pk INTEGER PRIMARY KEY AUTOINCREMENT,
         timestamp TEXT,
         process_id INTEGER,
         process_name TEXT,
         process_command_line TEXT,
-        process_cpu_usage INTEGER,
-        process_memory_usage INTEGER,
+        process_cpu_percent INTEGER,
+        process_memory_percent INTEGER,
         process_num_of_threads INTEGER,
         process_num_of_handles INTEGER,
         process_num_of_open_files INTEGER,
