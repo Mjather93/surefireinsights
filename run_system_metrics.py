@@ -11,13 +11,14 @@ import system_metrics
 
 csv_file_path = 'C:/Users/corlessd/OneDrive - ESG/Python/surefireinsights/metrics.csv'
 interval_seconds = 5
+report_fk = 1
 
 try:
     # execute the collection with multiple threads to speed up the process.
     with ThreadPoolExecutor(max_workers=2) as executor:
         while True:
-            executor.submit(system_metrics.SystemMetrics.collect_and_write_system_metrics(csv_file_path))
+            executor.submit(system_metrics.SystemMetrics.collect_and_write_system_metrics_to_db(report_fk))
             time.sleep(interval_seconds)
 # prints a new error message if you cancel the script.
 except KeyboardInterrupt:
-    print("Monitoring stopped. Exported metrics to", csv_file_path)
+    print("Monitoring stopped.")

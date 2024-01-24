@@ -58,7 +58,7 @@ connection = sqlite3.connect('surefireinsights.db')
 cursor = connection.cursor()
 cursor.execute('''
     INSERT INTO report
-    (report_name, monitoring_duration, monitoring_interval, report_start_time, run_hardware_specs, run_perfmon)
+    (report_name, monitoring_duration, monitoring_interval, report_start_time, run_system_specs, run_perfmon)
     VALUES (?, ?, ?, ?, ?, ?)
 ''', (report_name, monitoring_duration, monitoring_interval, report_start_time, run_system_specs, run_perfmon))
 connection.commit()
