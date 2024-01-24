@@ -1,10 +1,19 @@
+import argparse
 import platform
+import sqlite3
 import cpuinfo
 import psutil
+import json
 import re
 import socket
 import uuid
 from datetime import datetime
+
+# Import args
+argParser = argparse.ArgumentParser()
+argParser.add_argument("-rp", "--report_pk", help="Path to the config.yaml file")
+args = argParser.parse_args()
+report_pk = args.report_pk
 
 
 def get_size(memorysize, suffix="B"):
@@ -22,58 +31,60 @@ def get_size(memorysize, suffix="B"):
 
 
 def system_information():
-    print("=" * 40, "System Information", "=" * 40)
     uname = platform.uname()
-    print(f"Node Name: {uname.node}")
-    print(f"System: {uname.system}")
-    print(f"Release: {uname.release}")
-    print(f"Version: {uname.version}")
-    print(f"Machine: {uname.machine}")
-    print(f"Processor: {uname.processor}")
-    print(f"Processor: {cpuinfo.get_cpu_info()['brand_raw']}")
-    print(f"Ip-Address: {socket.gethostbyname(socket.gethostname())}")
-    print(f"Mac-Address: {':'.join(re.findall('..', '%012x' % uuid.getnode()))}")
-
-    # Boot Time
-    print("=" * 40, "Boot Time", "=" * 40)
+    system_name = uname.node
+    system_type = uname.system
+    system_release_version_major = uname.release
+    system_release_version_minor = uname.version
+    machine_type = uname.machine
+    processor_type = uname.processor
+    processor_spec = cpuinfo.get_cpu_info()['brand_raw']
+    ip_address = socket.gethostbyname(socket.gethostname())
+    mac_address = ':'.join(re.findall('..', '%012x' % uuid.getnode()))
     boot_time_timestamp = psutil.boot_time()
     bt = datetime.fromtimestamp(boot_time_timestamp)
-    print(f"Boot Time: {bt.year}/{bt.month}/{bt.day} {bt.hour}:{bt.minute}:{bt.second}")
-
-    # print CPU information
-    print("=" * 40, "CPU Info", "=" * 40)
-    # number of cores
-    print("Physical cores:", psutil.cpu_count(logical=False))
-    print("Total cores:", psutil.cpu_count(logical=True))
-    # CPU frequencies
+    last_boot_time = f"{bt.year}/{bt.month}/{bt.day} {bt.hour}:{bt.minute}:{bt.second}"
+    physical_core_count = psutil.cpu_count(logical=False)
+    total_core_count = psutil.cpu_count(logical=True)
     cpufreq = psutil.cpu_freq()
-    print(f"Max Frequency: {cpufreq.max:.2f}Mhz")
-
-    # Memory Information
-    print("=" * 40, "Memory Information", "=" * 40)
-    # get the memory details
+    max_core_frequency = f"{cpufreq.max:.2f}Mhz"
     svmem = psutil.virtual_memory()
-    print(f"Total: {get_size(svmem.total)}")
-
-    # Disk Information
-    print("=" * 40, "Disk Information", "=" * 40)
-    print("Partitions and Usage:")
-    # get all disk partitions
+    total_memory = get_size(svmem.total)
+    partitions_info = {}
     partitions = psutil.disk_partitions()
     for partition in partitions:
-        print(f"=== Device: {partition.device} ===")
-        print(f"  Mountpoint: {partition.mountpoint}")
-        print(f"  File system type: {partition.fstype}")
+        partition_info = {
+            "Device": partition.device,
+            "Mountpoint": partition.mountpoint,
+            "File system type": partition.fstype
+        }
+
         try:
             partition_usage = psutil.disk_usage(partition.mountpoint)
         except PermissionError:
-            # this can be catched due to the disk that
-            # isn't ready
+            # Handle PermissionError as needed
             continue
-        print(f"  Total Size: {get_size(partition_usage.total)}")
-        print(f"  Used: {get_size(partition_usage.used)}")
-        print(f"  Free: {get_size(partition_usage.free)}")
-        print(f"  Percentage: {partition_usage.percent}%")
+        partition_info["Total Size"] = get_size(partition_usage.total)
+        partition_info["Used"] = get_size(partition_usage.used)
+        partition_info["Free"] = get_size(partition_usage.free)
+        partition_info["Percentage"] = partition_usage.percent
+        partitions_info[partition.device] = partition_info
+    disk_information = json.dumps(partitions_info, indent=4)
+
+    # Insert the system specs metrics into the system_metrics table of the sqlite db
+    connection = sqlite3.connect('surefireinsights.db')
+    cursor = connection.cursor()
+    cursor.execute('''
+        INSERT INTO system_specs
+        (system_name, system_type, system_release_version_major, system_release_version_minor,
+        machine_type, processor_type, processor_spec, ip_address, mac_address, last_boot_time,
+        physical_core_count, total_core_count, max_core_frequency, total_memory, disk_information, report_fk)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (system_name, system_type, system_release_version_major, system_release_version_minor,
+          machine_type, processor_type, processor_spec, ip_address, mac_address, last_boot_time,
+          physical_core_count, total_core_count, max_core_frequency, total_memory, disk_information, report_pk))
+    connection.commit()
+    connection.close()
 
 
 if __name__ == "__main__":

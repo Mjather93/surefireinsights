@@ -1,17 +1,9 @@
+import argparse
 from datetime import datetime
 from os import system, name
 import sqlite3
 import time
-
-
-def get_yes_no_input(question):
-    while True:
-        user_input = input(f"{question} (Enter 'yes' or 'no'): ").lower()
-
-        if user_input in ('yes', 'no'):
-            return user_input
-        else:
-            print("Invalid input. Please enter 'yes' or 'no.")
+import sys
 
 
 def clear_console():
@@ -24,29 +16,22 @@ def clear_console():
         _ = system('clear')
 
 
-# Ask for the user to choose a report name and store the value in a variable
-report_name = input("What would you like to name this report? ")
+# Import args
+argParser = argparse.ArgumentParser()
+argParser.add_argument("-rn", "--report_name", help="Path to the config.yaml file")
+argParser.add_argument("-md", "--monitoring_duration", help="Path to the config.yaml file")
+argParser.add_argument("-mi", "--monitoring_interval", help="Path to the config.yaml file")
+argParser.add_argument("-rss", "--run_system_specs", help="Path to the config.yaml file")
+argParser.add_argument("-rsm", "--run_system_metrics", help="Path to the config.yaml file")
+argParser.add_argument("-rpm", "--run_process_metrics", help="Path to the config.yaml file")
+args = argParser.parse_args()
 
-# Ask for the user how long they want the monitoring to run for and store the value in a variable
-monitoring_duration_str = input("How long would you like monitoring to run for, in seconds, for this report? ")
-monitoring_duration = float(monitoring_duration_str)
-
-# Ask for the user to choose how frequently they want stats to be gathered and store the value in a variable
-monitoring_interval_str = input("At what frequency would you like metric data to be collected, "
-                                "in seconds, for this report? ")
-monitoring_interval = float(monitoring_interval_str)
-
-# Ask for the user if they want to run the system_specs function and store the value (0 or 1) in a variable
-run_system_specs_question = "Do you want to run the System Specification function?"
-run_system_specs = get_yes_no_input(run_system_specs_question)
-
-# Ask for the user if they want to run the system_metrics function and store the value (0 or 1) in a variable
-run_system_metrics_question = "Do you want to run the System Metrics function?"
-run_system_metrics = get_yes_no_input(run_system_metrics_question)
-
-# Ask for the user if they want to run the process_metrics function and store the value (0 or 1) in a variable
-run_process_metrics_question = "Do you want to run the Process Metrics function?"
-run_process_metrics = get_yes_no_input(run_process_metrics_question)
+report_name = args.report_name
+monitoring_duration = float(args.monitoring_duration)
+monitoring_interval = float(args.monitoring_interval)
+run_system_specs = args.run_system_specs
+run_system_metrics = args.run_system_metrics
+run_process_metrics = args.run_process_metrics
 
 # Clear console screen
 clear_console()
@@ -71,17 +56,6 @@ connection.commit()
 connection.close()
 report_pk = cursor.lastrowid
 
-# Print the report details
-print("Monitoring is due to start for the below configuration")
-print(f"Report Name: {report_name}")
-print(f"Monitoring Duration: {monitoring_duration}")
-print(f"Monitoring Interval: {monitoring_interval}")
-print(f"Run System Specs: {run_system_specs}")
-print(f"Run System Metrics: {run_system_metrics}")
-print(f"Run Process Metrics: {run_process_metrics}")
-print(f"Report PK: {report_pk}")
-print(f"Monitoring is starting at: {monitoring_start_time}")
-
 # Run monitoring for duration defined
 time.sleep(monitoring_duration)
 
@@ -101,5 +75,3 @@ cursor.execute('''
 ''', (monitoring_end_time, report_pk))
 connection.commit()
 connection.close()
-
-print(f"Monitoring is ending at: {monitoring_end_time}")

@@ -1,9 +1,6 @@
-import time
-from concurrent.futures import ThreadPoolExecutor
 import system_specs
 
 
-csv_file_path = 'C:/temp/metrics.csv'
 report_fk = 1
 
 try:
