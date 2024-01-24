@@ -44,5 +44,5 @@ report_pk = cursor.fetchone()[0]
 connection.close()
 
 if run_system_specs == "yes":
-    subprocess.run(["python", "system_specs.py", '--report_pk', str(report_pk)])
+    subprocess.run(["python", "run_system_specs.py", '--report_pk', str(report_pk)])
 
