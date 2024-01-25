@@ -1,4 +1,3 @@
-import argparse
 import platform
 import sqlite3
 import cpuinfo
@@ -8,13 +7,8 @@ import re
 import socket
 import uuid
 from datetime import datetime
+from get_report_fk import report_fk
 
-
-# Import args
-argParser = argparse.ArgumentParser()
-argParser.add_argument("-rp", "--report_pk", help="Path to the config.yaml file")
-args = argParser.parse_args()
-report_pk = args.report_pk
 
 def get_size(memorysize, suffix="B"):
     """
@@ -82,7 +76,7 @@ def system_information():
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''', (system_name, system_type, system_release_version_major, system_release_version_minor,
           machine_type, processor_type, processor_spec, ip_address, mac_address, last_boot_time,
-          physical_core_count, total_core_count, max_core_frequency, total_memory, disk_information, report_pk))
+          physical_core_count, total_core_count, max_core_frequency, total_memory, disk_information, report_fk))
     connection.commit()
     connection.close()
 

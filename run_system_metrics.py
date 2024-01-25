@@ -7,11 +7,11 @@
 import time
 from concurrent.futures import ThreadPoolExecutor
 import system_metrics
+from get_report_fk import report_fk
 
 
 csv_file_path = 'C:/Users/corlessd/OneDrive - ESG/Python/surefireinsights/metrics.csv'
 interval_seconds = 5
-report_fk = 1
 
 try:
     # execute the collection with multiple threads to speed up the process.

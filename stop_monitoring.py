@@ -1,12 +1,7 @@
-import argparse
 import sqlite3
 from datetime import datetime
+from get_report_fk import report_fk
 
-
-argParser = argparse.ArgumentParser()
-argParser.add_argument("-rp", "--report_pk", help="Path to the config.yaml file")
-args = argParser.parse_args()
-report_pk = args.report_pk
 
 # Store the monitoring end time
 end_datetime = datetime.now()
@@ -21,7 +16,7 @@ cursor.execute('''
     UPDATE report
     SET monitoring_end_time = ?
     WHERE report_pk = ?
-''', (monitoring_end_time, report_pk))
+''', (monitoring_end_time, report_fk))
 connection.commit()
 cursor.close()
 connection.close()

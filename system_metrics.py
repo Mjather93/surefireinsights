@@ -53,14 +53,14 @@ class SystemMetrics:
             metrics,
             report_fk
     ):
-        print(tuple(metrics.values()))
+        #  print(tuple(metrics.values()), report_fk)
         connection = sqlite3.connect('surefireinsights.db')
         cursor = connection.cursor()
         cursor.execute('''
             INSERT INTO system_metrics
             (timestamp,cpu_percent,memory_percent,disk_percent,disk_read_time,disk_read_bytes,disk_write_time,disk_write_bytes,network_bytes_sent,network_bytes_received,report_fk)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', f"{tuple(metrics.values())},{report_fk}")
+        ''', tuple(metrics.values()) + (report_fk,))
         connection.commit()
         connection.close()
 

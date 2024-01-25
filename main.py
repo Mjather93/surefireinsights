@@ -24,16 +24,9 @@ while True:
 subprocess.run(["python", "configure_monitoring.py", '--report_name', report_name,
                 '--monitoring_duration', str(monitoring_duration)])
 
-# Extract the report_pk for this report and store in a variable
-connection = sqlite3.connect('surefireinsights.db')
-cursor = connection.cursor()
-cursor.execute('''
-    select max(report_pk) from report
-''')
-report_pk = cursor.fetchone()[0]
-connection.close()
+subprocess.run(["python", "get_report_fk.py"])
 
-subprocess.run(["python", "run_system_specs.py", '--report_pk', str(report_pk)])
+subprocess.run(["python", "run_system_specs.py"])
 
 time_delta = datetime.timedelta(seconds=float(monitoring_duration))
 end_time = (datetime.datetime.now() + datetime.timedelta(seconds=float(monitoring_duration)))
@@ -55,4 +48,4 @@ if 'scripts' in scripts and scripts['scripts'] is not None:
 else:
     logging.info("No scripts to process.")
 
-subprocess.run(["python", "stop_monitoring.py", '--report_pk', str(report_pk)])
+subprocess.run(["python", "stop_monitoring.py"])
