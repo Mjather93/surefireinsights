@@ -1,0 +1,7 @@
+2024-01-25 09:46:13,484 - root - INFO - test.py has initialised.
+2024-01-25 09:46:13,485 - root - INFO - {'script_to_run': 'run_system_metrics.py', 'language': 'python', 'args': ['arg1', 'arg2'], 'interval': 20}
+2024-01-25 09:46:39,319 - root - INFO - test.py has initialised.
+2024-01-25 09:46:39,321 - root - INFO - {'script_to_run': 'run_system_metrics.py', 'language': 'python', 'args': ['arg1', 'arg2'], 'interval': 20}
+2024-01-25 09:46:39,326 - root - INFO - Starting execution of run_system_metrics.py (python) with arguments: ['arg1', 'arg2']
+2024-01-25 09:46:39,568 - root - INFO - run_system_metrics.py (python) executed successfully
+2024-01-25 09:46:39,568 - root - INFO - ----------------------------------------
