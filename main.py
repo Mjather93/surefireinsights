@@ -1,3 +1,5 @@
+import os
+import signal
 import subprocess
 import datetime
 import task_executor
@@ -32,18 +34,26 @@ end_time = (datetime.datetime.now() + datetime.timedelta(seconds=float(monitorin
 # print(end_time)
 
 # print(scripts)
-
+logging.info(f"Monitoring until: {end_time}")
 if 'scripts' in scripts and scripts['scripts'] is not None:
-    for script in scripts['scripts']:
-        logging.info(script)
-        task_to_do = task_executor.ExecuteTasks.execute_script(script)
-        with ThreadPoolExecutor(max_workers=script['threads']) as executor:
-            finished = False
-            while not finished:
-                current_time = datetime.datetime.now()
-                if current_time >= end_time:
-                    finished = True
-                    break
+    try:
+        os.setpgrp()
+        for script in scripts['scripts']:
+            logging.info(script)
+            task_to_do = task_executor.ExecuteTasks.execute_script(script)
+            with ThreadPoolExecutor(max_workers=script['threads']) as executor:
+                finished = False
+                while not finished:
+                    current_time = datetime.datetime.now()
+                    if current_time >= end_time:
+                        finished = True
+                        break
+                logging.info("Monitoring finished. The data will now be processed.")
+                subprocess.run(["python", "stop_monitoring.py"])
+    except KeyboardInterrupt:
+        print("Monitoring cancelled. Stopping.")
+    finally:
+        os.killpg(0, signal.SIGKILL)
 else:
     logging.info("No scripts to process.")
 
