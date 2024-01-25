@@ -1,27 +1,33 @@
 import datetime
+import logging
+import subprocess
+import time
 
 
 class ExecuteTasks:
 
     def __init__(self,
-                 duration: int,
-                 interval: int,
-                 start_time):
-        self.end_time = None
-        self.start_time = start_time
-        self.duration = duration
-        self.interval = interval
+                 script: object):
+        self.script = script
 
-    def calculate_end_time(self):
+    @staticmethod
+    def execute_script(script: object):
+        script_path = script['script_to_run']
+        script_language = script['language']
+        script_arguments = script['args']
+        logging.info(f'Starting execution of {script_path} ({script_language}) with arguments: {script_arguments}')
         try:
-            start_time_formatted = datetime.datetime(self.start_time, '%d-%m-%Y %H:%M:%S.%f')[:-3]
-            time_delta = datetime.timedelta(seconds=self.duration)
-            self.start_time = start_time_formatted
-            self.end_time = start_time_formatted + time_delta
-            return self.end_time
-        except Exception as e:
-            return f'Exception raised: {e}'
+            if script_language == 'python':
+                command = ['python', script_path] + script_arguments
+            elif script_language == 'powershell':
+                command = ['PowerShell.exe', script_path] + script_arguments
+            else:
+                logging.error(f'Unsupported scripting language: {script_language}')
+                return
+            subprocess.run(command)
+            logging.info(f'{script_path} ({script_language}) executed successfully')
+        except subprocess.CalledProcessError as e:
+            logging.error(f'Error executing {script_path} ({script_language}): {e}')
 
-    def work_to_do(self):
-
+        logging.info('----------------------------------------')
 
