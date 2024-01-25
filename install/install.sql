@@ -29,6 +29,8 @@ CREATE TABLE IF NOT EXISTS system_specs (
         REFERENCES report(report_pk)
 );
 
+CREATE UNIQUE INDEX IF NOT EXISTS systemspecs_reportfk ON system_specs(report_fk);
+
 CREATE TABLE IF NOT EXISTS system_metrics (
     system_metrics_pk INTEGER PRIMARY KEY AUTOINCREMENT,
     timestamp TEXT,
@@ -46,6 +48,8 @@ CREATE TABLE IF NOT EXISTS system_metrics (
         FOREIGN KEY (report_fk)
         REFERENCES report(report_pk)
 );
+
+CREATE UNIQUE INDEX IF NOT EXISTS systemmetrics_reportfk ON system_metrics(report_fk);
 
 CREATE TABLE IF NOT EXISTS process_metrics (
     process_metrics_pk INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -65,3 +69,5 @@ CREATE TABLE IF NOT EXISTS process_metrics (
         FOREIGN KEY (report_fk)
         REFERENCES report(report_pk)
 );
+
+CREATE UNIQUE INDEX IF NOT EXISTS processmetrics_reportfk ON process_metrics(report_fk);
