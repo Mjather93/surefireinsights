@@ -9,3 +9,8 @@ scripts:
  #  args: []
  #  interval: 20
  #  threads: 1
+ - script_to_run: run_process_metrics.py
+   language: python
+   args: ['names_to_match','java|erlsv|sql']
+   interval: 20
+   threads: 1
