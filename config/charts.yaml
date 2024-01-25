@@ -1,0 +1,7 @@
+charts:
+  - chart_name: system_metrics_cpu_percentage
+    chart_query: select timestamp, cpu_percent from system_metrics where report_fk = ?
+    x_column_name: timestamp
+    y_column_name: cpu_percent
+    chart_title: System Metrics - CPU Utilisation (%)
+    template: plotly_dark
