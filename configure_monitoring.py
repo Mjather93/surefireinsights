@@ -2,7 +2,7 @@ import argparse
 from datetime import datetime
 from os import system, name
 import sqlite3
-import time
+import logging_config
 
 
 def clear_console():
@@ -14,6 +14,9 @@ def clear_console():
     else:
         _ = system('clear')
 
+
+# Import logging configuration
+logging_config.logging_config()
 
 # Import args
 argParser = argparse.ArgumentParser()
@@ -42,25 +45,6 @@ cursor.execute('''
     VALUES (?, ?, ?)
 ''', (report_name, monitoring_duration, monitoring_start_time))
 connection.commit()
+cursor.close()
 connection.close()
 report_pk = cursor.lastrowid
-
-# Run monitoring for duration defined
-time.sleep(monitoring_duration)
-
-# Store the monitoring end time
-end_datetime = datetime.now()
-
-# Format the date and time as a string
-monitoring_end_time = end_datetime.strftime("%Y-%m-%d %H:%M:%S")
-
-# Update report table to add the monitoring end time
-connection = sqlite3.connect('surefireinsights.db')
-cursor = connection.cursor()
-cursor.execute('''
-    UPDATE report
-    SET monitoring_end_time = ?
-    WHERE report_pk = ?
-''', (monitoring_end_time, report_pk))
-connection.commit()
-connection.close()

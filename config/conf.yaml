@@ -1,9 +1,9 @@
 scripts:
- - script_to_run: run_system_metrics.py
-   language: python
-   args: []
-   interval: 20
-   threads: 1
+# - script_to_run: run_system_metrics.py
+#   language: python
+#   args: []
+#   interval: 20
+#   threads: 1
  # - script_to_run: run_system_metrics.pl
  #  language: perl
  #  args: []

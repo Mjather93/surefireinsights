@@ -6,9 +6,11 @@ import logging.config
 from concurrent.futures import ThreadPoolExecutor
 from initialise import scripts
 
-subprocess.run(["python", "initialise.py"])
-logging.info("The app has been started successfully")
-# Gather configuration items
+
+# If it doesn't already exist, create the sqlite database
+subprocess.run(["python", "create_sqlite_db.py"])
+
+# # Gather configuration items
 report_name = input("What would you like to name this report? ")
 monitoring_duration = input("How long would you like monitoring to run for, in seconds, for this report? ")
 
@@ -17,7 +19,6 @@ subprocess.run(["python", "configure_monitoring.py", '--report_name', report_nam
                 '--monitoring_duration', monitoring_duration])
 
 # Extract the report_pk for this report and store in a variable
-# Insert the report and monitoring info into the report table of the sqlite db
 connection = sqlite3.connect('surefireinsights.db')
 cursor = connection.cursor()
 cursor.execute('''
@@ -30,7 +31,7 @@ subprocess.run(["python", "run_system_specs.py", '--report_pk', str(report_pk)])
 
 time_delta = datetime.timedelta(seconds=float(monitoring_duration))
 end_time = (datetime.datetime.now() + datetime.timedelta(seconds=float(monitoring_duration)))
-print(end_time)
+# print(end_time)
 
 print(scripts)
 
@@ -44,3 +45,5 @@ for script in scripts['scripts']:
             if current_time >= end_time:
                 finished = True
                 break
+
+subprocess.run(["python", "stop_monitoring.py", '--report_pk', report_pk])
