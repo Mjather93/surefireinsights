@@ -5,3 +5,15 @@ charts:
     y_column_name: cpu_percent
     chart_title: System Metrics - CPU Utilisation (%)
     template: plotly_dark
+  - chart_name: system_metrics_memory_percentage
+    chart_query: select timestamp, memory_percent from system_metrics where report_fk = ?
+    x_column_name: timestamp
+    y_column_name: memory_percent
+    chart_title: System Metrics - Memory Utilisation (%)
+    template: plotly_dark
+  - chart_name: system_metrics_disk_percentage
+    chart_query: select timestamp, disk_percent from system_metrics where report_fk = ?
+    x_column_name: timestamp
+    y_column_name: disk_percent
+    chart_title: System Metrics - Disk Utilisation (%)
+    template: plotly_dark

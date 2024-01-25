@@ -1,29 +1,42 @@
 import sqlite3
 import pandas as pd
 import plotly.express as px
+import yaml
 # from get_report_fk import report_fk
 
 
 # Placeholder until integrated with app
 report_fk = 1
 
+# Load YAML configuration
+with open('config/charts.yaml', 'r') as file:
+    config = yaml.safe_load(file)
+
 # Connect to the SQLite database
 connection = sqlite3.connect('surefireinsights.db')
-cursor = connection.cursor()
 
-# Execute a query to fetch data
-query = 'select timestamp, cpu_percent from system_metrics where report_fk = ?'
-cursor.execute(query, str(report_fk))
+for chart_config in config.get('charts', []):
+    chart_name = chart_config.get('chart_name')
+    chart_query = chart_config.get('chart_query')
+    x_column_name = chart_config.get('x_column_name')
+    y_column_name = chart_config.get('y_column_name')
+    chart_title = chart_config.get('chart_title')
+    template = chart_config.get('template')
 
-# Fetch all the data and close the connection
-data = cursor.fetchall()
+    # Execute a query to fetch data
+    cursor = connection.cursor()
+    cursor.execute(chart_query, str(report_fk))
+    data = cursor.fetchall()
+    cursor.close()
+
+    # Convert the data to a Pandas DataFrame
+    df = pd.DataFrame(data, columns=[x_column_name, y_column_name])
+
+    # Create an interactive scatter plot
+    fig = px.line(df, x=x_column_name, y=y_column_name, title=chart_title, template=template)
+
+    # Save the Plotly figure to an HTML file
+    fig.write_html(f'reports/{chart_name}.html')
+
+# Close the database connection
 connection.close()
-
-# Convert the data to a Pandas DataFrame
-df = pd.DataFrame(data, columns=['timestamp', 'cpu_percent'])
-
-# Create an interactive scatter plot
-fig = px.line(df, x='timestamp', y='cpu_percent', title='System Metrics - CPU Utilisation (%)', template="plotly_dark")
-
-# Save the Plotly figure to an HTML file
-fig.write_html('reports/system_metrics_cpu_percentage.html')
