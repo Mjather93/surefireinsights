@@ -20,18 +20,10 @@ def clear_console():
 argParser = argparse.ArgumentParser()
 argParser.add_argument("-rn", "--report_name", help="Path to the config.yaml file")
 argParser.add_argument("-md", "--monitoring_duration", help="Path to the config.yaml file")
-argParser.add_argument("-mi", "--monitoring_interval", help="Path to the config.yaml file")
-argParser.add_argument("-rss", "--run_system_specs", help="Path to the config.yaml file")
-argParser.add_argument("-rsm", "--run_system_metrics", help="Path to the config.yaml file")
-argParser.add_argument("-rpm", "--run_process_metrics", help="Path to the config.yaml file")
 args = argParser.parse_args()
 
 report_name = args.report_name
 monitoring_duration = float(args.monitoring_duration)
-monitoring_interval = float(args.monitoring_interval)
-run_system_specs = args.run_system_specs
-run_system_metrics = args.run_system_metrics
-run_process_metrics = args.run_process_metrics
 
 # Clear console screen
 clear_console()
@@ -47,11 +39,9 @@ connection = sqlite3.connect('surefireinsights.db')
 cursor = connection.cursor()
 cursor.execute('''
     INSERT INTO report
-    (report_name, monitoring_duration, monitoring_interval, monitoring_start_time,
-    run_system_specs, run_system_metrics, run_process_metrics)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-''', (report_name, monitoring_duration, monitoring_interval, monitoring_start_time,
-      run_system_specs, run_system_metrics, run_process_metrics))
+    (report_name, monitoring_duration, monitoring_start_time)
+    VALUES (?, ?, ?, ?)
+''', (report_name, monitoring_duration, monitoring_start_time))
 connection.commit()
 connection.close()
 report_pk = cursor.lastrowid

@@ -12,12 +12,8 @@ cursor.execute('''
         report_pk INTEGER PRIMARY KEY AUTOINCREMENT,
         report_name TEXT,
         monitoring_duration INTEGER,
-        monitoring_interval INTEGER,
         monitoring_start_time TEXT,
-        monitoring_end_time TEXT,
-        run_system_specs TEXT,
-        run_system_metrics TEXT,
-        run_process_metrics TEXT
+        monitoring_end_time TEXT
     )
 ''')
 
