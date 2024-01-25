@@ -3,7 +3,6 @@ from datetime import datetime
 from os import system, name
 import sqlite3
 import time
-import sys
 
 
 def clear_console():
@@ -40,7 +39,7 @@ cursor = connection.cursor()
 cursor.execute('''
     INSERT INTO report
     (report_name, monitoring_duration, monitoring_start_time)
-    VALUES (?, ?, ?, ?)
+    VALUES (?, ?, ?)
 ''', (report_name, monitoring_duration, monitoring_start_time))
 connection.commit()
 connection.close()

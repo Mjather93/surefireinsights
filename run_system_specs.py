@@ -9,12 +9,12 @@ import socket
 import uuid
 from datetime import datetime
 
+
 # Import args
 argParser = argparse.ArgumentParser()
 argParser.add_argument("-rp", "--report_pk", help="Path to the config.yaml file")
 args = argParser.parse_args()
 report_pk = args.report_pk
-
 
 def get_size(memorysize, suffix="B"):
     """
