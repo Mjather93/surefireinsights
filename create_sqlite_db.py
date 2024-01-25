@@ -5,7 +5,7 @@ import logging_config
 
 # Import logging configuration
 logging_config.logging_config()
-print("connecting to db")
+
 # Connect to SQLite database (or create if it doesn't exist)
 connection = sqlite3.connect('surefireinsights.db')
 

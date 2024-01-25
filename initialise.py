@@ -16,5 +16,3 @@ logging_config.logging_config()
 working_dir = pathlib.Path().resolve()
 config_file = str(working_dir) + "/config/conf.yaml"
 scripts = load_conf_file(file_path=config_file)
-
-logging.info('test.py has initialised.')

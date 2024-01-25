@@ -5,16 +5,6 @@ import sqlite3
 import logging_config
 
 
-def clear_console():
-    # for windows
-    if name == 'nt':
-        _ = system('cls')
-
-    # for mac and linux
-    else:
-        _ = system('clear')
-
-
 # Import logging configuration
 logging_config.logging_config()
 
@@ -26,9 +16,6 @@ args = argParser.parse_args()
 
 report_name = args.report_name
 monitoring_duration = float(args.monitoring_duration)
-
-# Clear console screen
-clear_console()
 
 # Store the monitoring start time
 start_datetime = datetime.now()
