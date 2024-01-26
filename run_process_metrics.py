@@ -4,32 +4,44 @@
  Version: 0.0.1
  https://psutil.readthedocs.io/en/latest
 """
-import argparse
-import csv
-import sqlite3
+import datetime
+import logging
+import multiprocessing
 import time
-from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime
 import process_metrics
 from get_report_fk import report_fk
 
 
-argParser = argparse.ArgumentParser()
-argParser.add_argument("-ntm", "--name_to_match", help="list of names to match for process metrics")
-args = argParser.parse_args()
+def execute_process_metrics(
+        args,
+        interval,
+        end_time,
+        threads
+):
+    args = args.split(',')
+    criteria = args[1]
+    # start finding process ids where the process matches the criteria.
+    extractor = process_metrics.ProcessPerformanceExtractor(criteria)
+    matching_ids = extractor.get_matching_process_ids()
+    # start a loop and a threadpool to find process id information.
+    finished = False
+    logging.info(f"The monitoring will run until: {end_time}")
+    try:
+        while not finished:
+            current_time = datetime.datetime.now()
+            if current_time >= end_time:
+                finished = True
+                break
+            with multiprocessing.Pool(processes=threads) as pool:
+                metrics_data = pool.starmap(process_metrics.ProcessPerformanceExtractor.collect_metrics,
+                                            [(process, criteria) for process in matching_ids])
+            # Flatten the list of lists to prepare for the insert.
+            flat_metrics_data = [item for sublist in metrics_data for item in sublist]
+            print(flat_metrics_data)
+            # insert the data into the DB
+            process_metrics.ProcessPerformanceExtractor.insert_into_database(flat_metrics_data, report_fk)
+            print(f"Waiting between polls for {interval} seconds.")
+            time.sleep(interval)
+    except Exception as e:
+        logging.error(f"Error raised: {e}")
 
-csv_file_path = 'C:/Users/corlessd/OneDrive - ESG/Python/surefireinsights/process_metrics.csv'
-interval_seconds = 5
-name_to_match = 'java|erlsv|sql'
-
-try:
-    # execute the collection with multiple threads to speed up the process.
-    with ThreadPoolExecutor(max_workers=2) as executor:
-        while True:
-            executor.submit(process_metrics.ProcessMetrics.collect_and_write_process_metrics_to_db(report_fk=report_fk,
-                                                                                                   names_to_match=name_to_match))
-            time.sleep(interval_seconds)
-
-# prints a new error message if you cancel the script.
-except KeyboardInterrupt:
-    print("Monitoring stopped.")
