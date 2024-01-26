@@ -2,15 +2,23 @@ import sqlite3
 import pandas as pd
 import plotly.express as px
 import yaml
-# from get_report_fk import report_fk
+from get_report_fk import report_fk
 
-
-# Placeholder until integrated with app
-report_fk = 1
 
 # Load YAML configuration
 with open('config/charts.yaml', 'r') as file:
     config = yaml.safe_load(file)
+
+
+connection = sqlite3.connect('surefireinsights.db')
+cursor = connection.cursor()
+cursor.execute('''
+    select report_name from report
+    where report_pk = (select max(report_pk) from report)
+''')
+report_name = cursor.fetchone()[0]
+cursor.close()
+connection.close()
 
 # Connect to the SQLite database
 connection = sqlite3.connect('surefireinsights.db')
@@ -44,7 +52,7 @@ for chart_config in config.get('charts', []):
         raise ValueError("Invalid chart type")
 
     # Save the Plotly figure to an HTML file
-    fig.write_html(f'reports/{chart_name}.html')
+    fig.write_html(f'reports/{report_name}/{report_name}_{chart_name}.html')
 
 # Close the database connection
 connection.close()
