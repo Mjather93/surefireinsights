@@ -2,11 +2,8 @@ import sqlite3
 import pandas as pd
 import plotly.express as px
 import yaml
-# from get_report_fk import report_fk
+from get_report_fk import report_fk
 
-
-# Placeholder until integrated with app
-report_fk = 1
 
 # Load YAML configuration
 with open('config/charts.yaml', 'r') as file:
