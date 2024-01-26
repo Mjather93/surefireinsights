@@ -8,6 +8,9 @@ from concurrent.futures import ThreadPoolExecutor
 from initialise import scripts
 from create_sqlite_db import CreateDb
 from configure_monitoring import ConfigureMonitoring
+from configure_monitoring import ConfigureMonitoring
+from generate_report import GenerateReport
+from create_report_dir import GenerateReportDir
 
 # If it doesn't already exist, create the sqlite database
 if __name__ == "__main__":
@@ -58,3 +61,20 @@ if __name__ == "__main__":
     else:
         logging.info("No scripts to process.")
         subprocess.run(["python", "stop_monitoring.py"])
+
+# Create report dir
+if __name__ == "__main__":
+    process_configure_monitoring = multiprocessing.Process(target=GenerateReportDir.create_report_dir(
+        report_name))
+
+subprocess.run(["python", "generate_chart.py"])
+
+# Generate report
+if __name__ == "__main__":
+    process_configure_monitoring = multiprocessing.Process(target=GenerateReport.create_report_files(
+        report_name))
+
+# Update report -
+if __name__ == "__main__":
+    process_configure_monitoring = multiprocessing.Process(target=GenerateReport.update_report(
+        report_name))
