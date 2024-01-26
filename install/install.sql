@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS system_specs (
         REFERENCES report(report_pk)
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS systemspecs_reportfk ON system_specs(report_fk);
+CREATE INDEX IF NOT EXISTS systemspecs_reportfk ON system_specs(report_fk);
 
 CREATE TABLE IF NOT EXISTS system_metrics (
     system_metrics_pk INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS system_metrics (
         REFERENCES report(report_pk)
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS systemmetrics_reportfk ON system_metrics(report_fk);
+CREATE INDEX IF NOT EXISTS systemmetrics_reportfk ON system_metrics(report_fk);
 
 CREATE TABLE IF NOT EXISTS process_metrics (
     process_metrics_pk INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -57,17 +57,12 @@ CREATE TABLE IF NOT EXISTS process_metrics (
     process_id INTEGER,
     process_name TEXT,
     process_command_line TEXT,
-    process_cpu_percent INTEGER,
-    process_memory_percent INTEGER,
-    process_num_of_threads INTEGER,
-    process_num_of_handles INTEGER,
-    process_num_of_open_files INTEGER,
-    process_read_count INTEGER,
-    process_write_count INTEGER,
+    metric_name INTEGER,
+    metric_value REAL,
     report_fk INTEGER,
     CONSTRAINT fk_report
         FOREIGN KEY (report_fk)
         REFERENCES report(report_pk)
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS processmetrics_reportfk ON process_metrics(report_fk);
+CREATE INDEX IF NOT EXISTS processmetrics_reportfk ON process_metrics(report_fk);
