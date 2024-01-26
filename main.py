@@ -58,3 +58,5 @@ if 'scripts' in scripts and scripts['scripts'] is not None:
         subprocess.run(["python", "stop_monitoring.py"])
 else:
     logging.info("No scripts to process.")
+
+subprocess.run(["python", "generate_chart.py"])
