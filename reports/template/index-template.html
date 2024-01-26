@@ -3,104 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surefire Insights - Report</title>
-    <style>
-        body {
-            background-color: #0D0D1A;
-			color: #FFFFFF
-			margin: 0;
-            font-family: Arial, sans-serif;
-        }
-
-        .title-bar {
-            background-color: #0D0D1A;
-            color: #FFFFFF;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-		
-		.report-details {
-            background-color: #0D0D1A;
-            color: #FFFFFF;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            width: 150px;
-            height: 150px;
-        }
-
-        .heading {
-            text-align: center;
-            flex-grow: 1;
-            margin: 0;
-			color: #FFFFFF;
-        }
-		
-		.table-section {
-            padding: 20px;
-            text-align: center;
-        }
-
-        table {
-            width: 50%;
-            border-collapse: collapse;
-            margin: 0 auto;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-			color: #FFFFFF;
-        }
-
-        th {
-            background-color: #0D0D1A;
-            color: #FFFFFF;
-        }
-		
-		.section-header {
-            text-align: center;
-			color: #FFFFFF;		
-		}
-		
-		
-    </style>
+    <title>Surefire Insights - Performance Insight Report</title>
+    <link rel="stylesheet" type="text/css" href="static\style.css">
 </head>
 <body>
     <div class="title-bar">
-        <img src="C:\Users\athertonm\PycharmProjects\surefireinsights\reports\template\logo-square.png" alt="Surefire Insights" class="logo">
-        <h1 class="heading">Surefire Insights - Report</h1>
+        <div>
+			<img src="static\logo-square.png" alt="Surefire Insights" class="logo">
+        </div>
+		<div class="heading">
+			<h1>Performance Insight Report</h1>
+		</div>
+		<div class="empty-logo">
+		</div>
     </div>
 		
 	<div class="table-section">
-		<h3 class="section-header">Report Details</h3>
+		<h2 class="section-header">Report Details</h2>
 		<table>
+		    <colgroup>
+				<col style="width: 50%;">
+				<col style="width: 50%;">
+			</colgroup>
 			<th>Metric</th><th>Value</th>
 			<tr>
 				<td>Report Name</td>
-				<td>Name</td>
-			</tr>
-			<tr>
-				<td>Monitoring Duration</td>
-				<td>Duration</td>
+				<td>REPLACENAME</td>
 			</tr>
 			<tr>
 				<td>Monitoring Start Time</td>
-				<td>Start Time</td>
+				<td>REPLACESTARTTIME</td>
 			</tr>
 			<tr>
 				<td>Monitoring End Time</td>
-				<td>End Time</td>
+				<td>REPLACEENDTIME</td>
 			</tr>
 		</table>
     </div>
+	
+	<div class="system-metrics">
+		<h2 class="section-header">System Metrics Charts</h2>
+		ADDSYSTEMMETRICSLINKS
+	</div>
 
 	
 
