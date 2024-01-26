@@ -30,7 +30,7 @@ class ExecuteTasks:
                 logging.error(f'Unsupported scripting language: {script_language}')
                 return
             logging.info(f'This is the command to run {command}')
-            subprocess.run(command)
+            subprocess.run(command, shell=True)
             logging.info(f'{script_path} ({script_language}) executed successfully')
         except subprocess.CalledProcessError as e:
             logging.error(f'Error executing {script_path} ({script_language}): {e}')
