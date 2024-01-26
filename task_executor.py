@@ -1,7 +1,7 @@
-import datetime
+import os
 import logging
+import pathlib
 import subprocess
-import time
 
 
 class ExecuteTasks:
@@ -12,11 +12,14 @@ class ExecuteTasks:
 
     @staticmethod
     def execute_script(script, end_time):
-        script_path = script['script_to_run']
+        working_dir = pathlib.Path().resolve()
+        script_path = str(working_dir) + f'/{script['script_to_run']}'
         script_language = script['language']
         script_arguments = script['args']
         script_interval = script['interval']
         script_threads = script['threads']
+        if os.path.exists(script_path):
+            logging.debug(f'we can find the script path {script_path}')
         logging.info(f'Starting execution of {script_path} ({script_language}) with arguments: {script_arguments}')
         try:
             if script_language == 'python':
@@ -26,6 +29,7 @@ class ExecuteTasks:
             else:
                 logging.error(f'Unsupported scripting language: {script_language}')
                 return
+            logging.info(f'This is the command to run {command}')
             subprocess.run(command)
             logging.info(f'{script_path} ({script_language}) executed successfully')
         except subprocess.CalledProcessError as e:
