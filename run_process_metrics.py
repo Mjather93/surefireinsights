@@ -4,6 +4,7 @@
  Version: 0.0.1
  https://psutil.readthedocs.io/en/latest
 """
+import traceback
 import datetime
 import logging
 import multiprocessing
@@ -20,6 +21,7 @@ def execute_process_metrics(
 ):
     args = args.split(',')
     criteria = args[1]
+    print(interval, end_time, threads)
     # start finding process ids where the process matches the criteria.
     extractor = process_metrics.ProcessPerformanceExtractor(criteria)
     matching_ids = extractor.get_matching_process_ids()
@@ -44,4 +46,4 @@ def execute_process_metrics(
             time.sleep(interval)
     except Exception as e:
         logging.error(f"Error raised: {e}")
-
+        logging.error(traceback.print_stack())

@@ -1,3 +1,4 @@
+import concurrent.futures
 import multiprocessing
 import subprocess
 import datetime
@@ -7,7 +8,6 @@ from concurrent.futures import ThreadPoolExecutor
 from initialise import scripts
 from create_sqlite_db import CreateDb
 from configure_monitoring import ConfigureMonitoring
-
 
 # If it doesn't already exist, create the sqlite database
 if __name__ == "__main__":
@@ -29,34 +29,32 @@ if __name__ == "__main__":
         report_name, monitoring_duration))
 
 subprocess.run(["python", "get_report_fk.py"])
-
 subprocess.run(["python", "run_system_specs.py"])
 
-time_delta = datetime.timedelta(seconds=float(monitoring_duration))
-end_time = (datetime.datetime.now() + datetime.timedelta(seconds=float(monitoring_duration)))
-# print(end_time)
-
-# print(scripts)
-logging.info(f"Monitoring until: {end_time}")
-if 'scripts' in scripts and scripts['scripts'] is not None:
-    try:
-        for script in scripts['scripts']:
-            logging.info(script)
-            task_to_do = task_executor.ExecuteTasks.execute_script(script)
-            with ThreadPoolExecutor(max_workers=script['threads']) as executor:
-                finished = False
-                while not finished:
-                    current_time = datetime.datetime.now()
-                    if current_time >= end_time:
-                        finished = True
-                        break
-                logging.info("Monitoring finished. The data will now be processed.")
-                subprocess.run(["python", "stop_monitoring.py"])
-    except KeyboardInterrupt:
-        print("Monitoring cancelled. Stopping.")
-    finally:
+if __name__ == "__main__":
+    end_time = (datetime.datetime.now() + datetime.timedelta(seconds=float(monitoring_duration)))
+    end_time_str = end_time.strftime("%Y-%m-%d %H:%M:%S")
+    logging.info(f"Monitoring until: {end_time}")
+    if 'scripts' in scripts and scripts['scripts'] is not None:
+        finished = False
+        try:
+            pool = concurrent.futures.ThreadPoolExecutor(max_workers=4)
+            for script in scripts['scripts']:
+                logging.info(script)
+                pool.submit(task_executor.ExecuteTasks.execute_script(script, end_time_str))
+            logging.info("Tasks have been executed. We will now wait for the monitoring to finish.")
+            logging.info(f"End time -> {end_time}.")
+            while not finished:
+                current_time = datetime.datetime.now()
+                if current_time >= end_time:
+                    logging.info("Monitoring finished. The data will now be processed.")
+                    pool.shutdown(wait=True)
+                    finished = True
+        except KeyboardInterrupt:
+            print("Monitoring cancelled. Stopping.")
+        finally:
+            pool.shutdown(wait=True)
+            subprocess.run(["python", "stop_monitoring.py"])
+    else:
+        logging.info("No scripts to process.")
         subprocess.run(["python", "stop_monitoring.py"])
-else:
-    logging.info("No scripts to process.")
-
-subprocess.run(["python", "generate_chart.py"])

@@ -1,16 +1,14 @@
 scripts:
- - script_to_run: run_system_metrics.py
-   language: python
-   args: []
-   interval: 20
-   threads: 1
+# - script_to_run: run_system_metrics.py
+#   args: []
+#   interval: 20
+#   threads: 1
  # - script_to_run: run_system_metrics.pl
- #  language: perl
  #  args: []
  #  interval: 20
  #  threads: 1
- - script_to_run: run_process_metrics.py
-   language: python
-   args: ['names_to_match','java|erlsv|sql']
-   interval: 20
-   threads: 1
+- script_to_run: run_process_metrics.py
+  language: python
+  args: ['criteria','py']
+  interval: 20
+  threads: 1
